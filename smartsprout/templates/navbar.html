@@ -1,0 +1,52 @@
+<!-- logado -->
+
+<nav class="navbar navbar-expand-lg bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="/home">SmartSprout</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                {% if current_user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" aria-current="page" href="/home">Home</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="/home" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Sistema
+                        </a>
+                        <ul class="dropdown-menu text-white">
+                            {% if current_user.roles == "administrador" or current_user.roles == "estatístico" or current_user.roles == "comum" %}
+                                <li><a class="dropdown-item" href="/sensores">Sensores</a></li>
+                            {% endif %}
+                            {% if current_user.roles == "administrador" or current_user.roles == "operador" or current_user.roles == "comum" %}
+                                <li><a class="dropdown-item" href="/configuracoes">Configuração</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% if current_user.roles == "administrador" %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="/home" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Gestão
+                            </a>
+                            <ul class="dropdown-menu text-white">
+                                <li><a class="dropdown-item" href="/produtos">Produtos</a></li>
+                                <li><a class="dropdown-item" href="/gestao">Gestão</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <a type="button" class="btn btn-primary" href="/">Logout</a>
+        </div>
+    </div>
+</nav>

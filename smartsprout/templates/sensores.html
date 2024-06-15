@@ -1,0 +1,74 @@
+{% extends"base.html" %}
+{% block content%}
+
+{% if current_user.roles == "administrador" or current_user.roles == "estatístico" %}
+
+    <form class="form-inline" method="post" action="{{ url_for('sensor.sensores_venda') }}">
+        <div class="row justify-content-center">
+            <select class="form-select mt-3 me-2" aria-label="Default select example" name="select_user" id="select_user"
+                    style="width: 400px; margin-left: 60px">
+
+              <option selected>Buscar...</option>
+                    {% for venda, usuario in usuarios_filtrados.items() %}
+                        <option value="{{ venda.id }}">{{ usuario[0].username }} - {{ usuario[1].nome }}</option>
+                    {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary me-3 mt-3" style="width:5rem">Buscar</button>
+        </div>
+    </form>
+{% endif %}
+
+{% if sensores_valores %}
+<!--aparelhos ativos-->
+<div class="row justify-content-evenly">
+    <div class="container bg-success bg-opacity-10 col-6 mt-4 justify-content-start rounded" style="height: 20rem;">
+        <div class=" card container text-center fs-1 mb-2 bg-success text-white">
+            Sensores
+        </div>
+        <div class="container text-center">
+            <div class="row justify-content-evenly">
+                <div class="col-3">
+                    <div class="card bg-success">
+                        <div class="text-bg-success mb-3" style="max-width: 10rem;">
+                            <div class="card-header fw-bolder">Umidade</div>
+                            <div class="card-body">
+                                <h1 class="card-title">{{ sensores_valores[1].valor }} %</h1>
+                                <p class="card-text fw-bolder">SECO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card bg-success">
+                        <div class="text-bg-success mb-3" style="max-width: 10rem;">
+                            <div class="card-header fw-bolder">Nível da Água</div>
+                            <div class="card-body">
+                                <h1 class="card-title">{{sensores_valores[0].valor}} mL</h1>
+                                <p class="card-text fw-bolder">BAIXO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="" method="post">
+                <button type="submit" class="btn btn-primary me-3 mt-3" style="width:6rem">Atualizar</button>
+            </form>
+        </div>
+    </div>
+
+    <!--historico-->
+    <div class="container bg-success bg-opacity-10 col-4 mt-4  rounded justify-content-start"
+        style="height: 30rem;">
+        <div class="container">
+            <div class="text-center bg-success text-white fw-bolder rounded">
+                <h1>Histórico</h1>
+            </div>
+        </div>
+
+        <div class="container overflow-auto bg-white text-black mh-90" style="width: 90%; height: 85%;">
+            <p></p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock%}

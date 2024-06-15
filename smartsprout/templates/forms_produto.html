@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content%}
+
+<div class="vertical-center mt-3 ">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-body">
+                    <form action = "" method = "post" enctype="multipart/form-data">
+                        {{ form_produto.csrf_token }}
+                        <div>
+                            {{ form_produto.nome_produto.label(class="form-label mt-2 mb-3" ) }}
+                            {{ form_produto.nome_produto(class="form-control w-25 mb-4") }}
+                        </div>
+                        <div>
+                            {{ form_produto.sensor_ultrassonico.label(class="form-label mt-2 mb-3" ) }}
+                            {{ form_produto.sensor_ultrassonico(class="form-control w-25 mb-4") }}
+                        </div>
+                        <div>
+                            {{ form_produto.sensor_umidade.label(class="form-label mt-2 mb-3" ) }}
+                            {{ form_produto.sensor_umidade(class="form-control w-25 mb-4") }}
+                        </div>
+                        <div>
+                            {{ form_produto.rele.label(class="form-label mt-2 mb-3" ) }}
+                            {{ form_produto.rele(class="form-control w-25 mb-4") }}
+                        </div>
+                        <div>
+                            {{ form_produto.bomba_agua.label(class="form-label mt-2 mb-3" ) }}
+                            {{ form_produto.bomba_agua(class="form-control w-25 mb-4") }}
+                        </div>
+                        {{ form_produto.botao_submit_criarproduto(class="btn btn-primary rounded mt-2") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

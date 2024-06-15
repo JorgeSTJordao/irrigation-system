@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block content%}
+
+<style>
+    .hidden {
+        display: none !important;
+    }
+
+    .modal-dialog {
+        max-width: 100%;
+    }
+
+    #navUsuarios {
+        width: 15rem;
+        min-width: 15rem;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+
+    #KIT {
+        width: calc(100% - 1rem);
+    }
+
+    .kit-container {
+        height: 60vh;
+        overflow-y: auto;
+        margin-right: 1rem;
+    }
+</style>
+
+<div class="d-flex">
+
+    <!-- Usuários cadastrados -->
+    <div class="bg-success bg-opacity-10 overflow-auto min-vh-100 border-end border-2 border-success" id="navUsuarios">
+
+        <!-- Lista de usuários -->
+        {% for usuario in usuarios %}
+            {% if usuario.roles == "comum" %}
+                <form action="{{ url_for('gestao.gestao_usuario', id_usuario=usuario.id) }}" method="post">
+                    <button type="submit" class="bg-white text-black border border-2 border-secondary border-end-0 mb-1"
+                            style="height:4rem; width:100%; text-align:left">
+                        <p>ID: {{ usuario.id }}</p>
+                        <p>Nome: {{ usuario.username }}</p>
+                    </button>
+                </form>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Botão de cadastro -->
+        <div class="text-center mt-2">
+            <button type="button" class="btn btn-primary text-white fw-bolder mb-2" data-bs-toggle="modal"
+            data-bs-target="#cadastroUsuarioModal">
+                Cadastrar Usuário
+            </button>
+        </div>
+
+    </div>
+
+
+    {% if usuario %}
+        <!-- Interface de um usuário X -->
+        <div id="usuarioInterface" class="d-flex flex-grow-1 overflow-auto">
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <h1 class="text-center flex-grow-1">Informações Gerais</h1>
+                    <form action="{{ url_for('gestao.gestao_deletar_usuario', id_usuario=usuario.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger me-3" style="height:2.6rem">
+                            Excluir
+                        </button>
+                    </form>
+                </div>
+
+                <!--Mostra o nome,ID e o botão de editar-->
+                <div class="d-flex justify-content-between align-items-center mt-2 bg-success bg-opacity-10 border-top border-bottom border-2 border-success"
+                    style="height: 5rem;">
+                    <div>
+                        <p class="mt-2 ms-1">ID: {{ usuario.id }}</p>
+                        <p class="ms-1">Nome: {{ usuario.username }}</p>
+                    </div>
+                    <input type="submit" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        name="/edit_user" value="Editar"/>
+                </div>
+
+                <h2 class="text-center">Aparelhos</h2>
+
+
+                <!-- Adiciona um contêiner com rolagem para os kits -->
+                <div class="kit-container">
+                    <div class="d-flex justify-content-center align-items-center flex-wrap mt-4 me-3" id="KIT">
+                        {% for produto, componente in produtos_filtrados.items() %}
+                                <div class="bg-success bg-opacity-10 border border-2 border-success p-3 me-3 mb-3"
+                                    style="width: 20%; height: 15rem;">
+                                    <div class="d-flex flex-column align-items-center" style="height: 100%;">
+                                        <h3 class="mb-3">{{ produto.nome }}</h3>
+                                        <div>
+                                            <p>{{ componente[0].nome }}</p>
+                                            <p>{{ componente[1].nome }}</p>
+                                            <p>{{ componente[2].nome }}</p>
+                                            <p>{{ componente[3].nome }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                        {% endfor %}
+
+                        <form action="{{ url_for('gestao.gestao_venda', id_usuario=usuario.id) }}" method="post">
+                            <button type="submit" class="btn btn-primary p-3 ms-3 mb-3"
+                                    style="width: 100%; height: 15rem;" >
+                                  <div class="d-flex flex-column align-items-center" style="height: 30%;">
+                                      <h3 class="mb-3">Vender Kit</h3>
+                                  </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Interface da edição de usuario-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"
+                style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+                <div class="modal-content" style="width: 20rem;">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Usuário</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{{ url_for('gestao.gestao_usuario', id_usuario=usuario.id) }}" class="input-group mb-3 flex-column">
+                            {{ form_editarusuario.csrf_token }}
+                            <div>
+                                {{ form_editarusuario.username.label(class="form-label mt-2") }}
+                                {{ form_editarusuario.username(class="form-control", placeholder="Username") }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                {{ form_editarusuario.botao_submit_editarusuario(class="btn btn-primary") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Interface de cadastro de usuario-->
+    <div class="modal" id="cadastroUsuarioModal" tabindex="-1" aria-labelledby="cadastroUsuarioLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg"
+            style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+            <div class="modal-content" style="width: 20rem;">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="cadastroUsuarioLabel">Cadastrar Usuário</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form class="input-group mb-3 flex-column" action="" method="post">
+                        {{ form_criarusuario.csrf_token }}
+                        <div>
+                            {{ form_criarusuario.username.label(class="form-label mt-2") }}
+                            {{ form_criarusuario.username(class="form-control", placeholder="Username") }}
+                        </div>
+                        <div>
+                            {{ form_criarusuario.senha.label(class="form-label mt-2") }}
+                            {{ form_criarusuario.senha(class="form-control", placeholder="Senha") }}
+                        </div>
+
+                        <div>
+                            {{ form_criarusuario.roles.label(class="form-label mt-2") }}
+                            {{ form_criarusuario.roles(class="form-control") }}
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            {{ form_criarusuario.botao_submit_criarusuario(class="btn btn-primary mt-1") }}
+                         </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}
